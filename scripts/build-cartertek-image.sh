@@ -8,7 +8,7 @@ image_name="${CUSTOM_IMAGE:-cartertek/frappe}"
 primary_tag="${CUSTOM_TAG:-develop}"
 custom_tags="${CUSTOM_TAGS:-}"
 frappe_path="${FRAPPE_PATH:-https://github.com/frappe/frappe}"
-frappe_branch="${FRAPPE_BRANCH:-version-17}"
+frappe_branch="${FRAPPE_BRANCH:-develop}"
 containerfile="${CONTAINERFILE:-images/layered/Containerfile}"
 
 if [[ ! -s apps.json ]]; then
