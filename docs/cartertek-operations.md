@@ -36,6 +36,10 @@ ENV_FILE=.env.production scripts/render-compose.sh
 
 This writes `compose.cartertek.rendered.yaml` for inspection.
 
+## Local site name
+
+The target stack defaults to `SITE_NAME=frappe.localhost` and `FRAPPE_SITE_NAME_HEADER=frappe.localhost`. This is intentional for the current laptop-hosted deployment. The old source site remains `hrms.localhost` only for audit and backup scripts. Restore and migrate scripts default to the new `frappe.localhost` site.
+
 ## Start production stack
 
 ```bash
@@ -78,13 +82,13 @@ apps.txt
 Create the site first if needed, then restore the database and files:
 
 ```bash
-SITE_NAME=hrms.localhost BACKUP_DIR=/path/to/pre-migration-backup scripts/restore-site.sh
+SITE_NAME=frappe.localhost BACKUP_DIR=/path/to/pre-migration-backup scripts/restore-site.sh
 ```
 
 Then migrate and validate:
 
 ```bash
-SITE_NAME=hrms.localhost scripts/migrate-site.sh
+SITE_NAME=frappe.localhost scripts/migrate-site.sh
 ```
 
 ## Update image later
