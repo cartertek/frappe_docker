@@ -33,7 +33,6 @@ redis-cache
 redis-queue
 ```
 
-
 ## Image build path
 
 Cartertek uses `images/layered/Containerfile` for the production image build.

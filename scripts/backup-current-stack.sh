@@ -24,7 +24,7 @@ docker exec "$target_container" bash -lc "cd '$bench_dir' && bench --site '$site
 latest_backup_dir="$(docker exec "$target_container" bash -lc "cd '$bench_dir/sites/$site/private/backups' && pwd")"
 mapfile -t artifacts < <(docker exec "$target_container" bash -lc "find '$bench_dir/sites/$site/private/backups' -maxdepth 1 -type f -printf '%T@ %p\n' | sort -nr | head -n 10 | cut -d' ' -f2-")
 
-printf '%s\n' "${artifacts[@]}" > "$out_dir/backup-artifacts-in-container.txt"
+printf '%s\n' "${artifacts[@]}" >"$out_dir/backup-artifacts-in-container.txt"
 
 for path in \
   "$bench_dir/sites/$site/site_config.json" \
@@ -37,7 +37,7 @@ for artifact in "${artifacts[@]}"; do
   docker cp "${target_container}:${artifact}" "$out_dir/"
 done
 
-cat > "$out_dir/README.txt" <<README
+cat >"$out_dir/README.txt" <<README
 Pre-migration backup for ${site}
 Container: ${target_container}
 Bench: ${bench_dir}

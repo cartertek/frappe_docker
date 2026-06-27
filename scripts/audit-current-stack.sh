@@ -26,8 +26,8 @@ run setup-complete "bench --site '$site' execute frappe.is_setup_complete"
 run doctor "bench --site '$site' doctor"
 run company "bench --site '$site' execute frappe.get_all --args '[\"Company\"]' --kwargs '{\"fields\":[\"name\",\"abbr\",\"default_currency\"]}'"
 
-docker exec "$target_container" bash -lc "cd '$bench_dir/apps/sales_engagement_intelligence' && git status --short --branch && git rev-parse HEAD" > "$out_dir/sales-engagement-intelligence-git.txt" || true
+docker exec "$target_container" bash -lc "cd '$bench_dir/apps/sales_engagement_intelligence' && git status --short --branch && git rev-parse HEAD" >"$out_dir/sales-engagement-intelligence-git.txt" || true
 
-docker exec "$target_container" bash -lc "pid=\$(pgrep -f 'frappe serve --port 8000' | head -n1); if [ -n \"\$pid\" ]; then readlink /proc/\$pid/cwd; else echo 'frappe serve process not found'; fi" > "$out_dir/active-serving-path.txt" || true
+docker exec "$target_container" bash -lc "pid=\$(pgrep -f 'frappe serve --port 8000' | head -n1); if [ -n \"\$pid\" ]; then readlink /proc/\$pid/cwd; else echo 'frappe serve process not found'; fi" >"$out_dir/active-serving-path.txt" || true
 
 echo "Audit written to $out_dir"

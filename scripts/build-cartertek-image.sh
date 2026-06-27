@@ -22,7 +22,7 @@ if ! command -v docker >/dev/null 2>&1; then
 fi
 
 if [[ -n "$custom_tags" ]]; then
-  read -r -a tags <<< "${custom_tags//,/ }"
+  read -r -a tags <<<"${custom_tags//,/ }"
 else
   tags=("$primary_tag")
   if [[ "$primary_tag" == "develop" ]]; then
