@@ -38,7 +38,7 @@ This writes `compose.cartertek.rendered.yaml` for inspection.
 
 ## Local site name
 
-The target stack defaults to `SITE_NAME=frappe.localhost` and `FRAPPE_SITE_NAME_HEADER=frappe.localhost`. This is intentional for the current laptop-hosted deployment. The old source site remains `hrms.localhost` only for audit and backup scripts. Restore and migrate scripts default to the new `frappe.localhost` site.
+The target stack defaults to `SITE_NAME=frappe.localhost` and `FRAPPE_SITE_NAME_HEADER=frappe.localhost`. This is intentional for the current laptop-hosted deployment. The default noproxy mapping keeps the familiar host port `9800`, but it points to the Frappe Docker `frontend` service on container port `8080`, not directly to the backend bench server on `8000`. Because the site header is fixed to `frappe.localhost`, the frontend can route laptop requests to the intended site even when the browser uses the forwarded Docker port. The old source site remains `hrms.localhost` only for audit and backup scripts. Restore and migrate scripts default to the new `frappe.localhost` site.
 
 ## Start production stack
 
