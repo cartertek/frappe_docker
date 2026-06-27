@@ -1,0 +1,54 @@
+# Cartertek deployment-specific override.
+# Combine with official overrides, for example:
+#   compose.yaml
+#   overrides/compose.mariadb.yaml
+#   overrides/compose.redis.yaml
+#   overrides/compose.noproxy.yaml
+#   overrides/cartertek.yaml
+
+services:
+  frontend:
+    environment:
+      FRAPPE_SITE_NAME_HEADER: ${FRAPPE_SITE_NAME_HEADER:-frappe.localhost}
+      PROXY_READ_TIMEOUT: ${PROXY_READ_TIMEOUT:-120}
+      CLIENT_MAX_BODY_SIZE: ${CLIENT_MAX_BODY_SIZE:-50m}
+    volumes:
+      - logs:/home/frappe/frappe-bench/logs
+
+  backend:
+    environment:
+      GUNICORN_THREADS: ${GUNICORN_THREADS:-4}
+      GUNICORN_WORKERS: ${GUNICORN_WORKERS:-2}
+      GUNICORN_TIMEOUT: ${GUNICORN_TIMEOUT:-120}
+    volumes:
+      - logs:/home/frappe/frappe-bench/logs
+
+  websocket:
+    volumes:
+      - logs:/home/frappe/frappe-bench/logs
+
+  queue-short:
+    volumes:
+      - logs:/home/frappe/frappe-bench/logs
+
+  queue-long:
+    volumes:
+      - logs:/home/frappe/frappe-bench/logs
+
+  scheduler:
+    environment:
+      SITE_NAME: ${FRAPPE_SITE_NAME_HEADER:-frappe.localhost}
+    volumes:
+      - logs:/home/frappe/frappe-bench/logs
+
+  redis-cache:
+    volumes:
+      - redis-cache-data:/data
+
+volumes:
+  sites:
+  logs:
+  db-data:
+  redis-cache-data:
+  redis-queue-data:
+  backups:
