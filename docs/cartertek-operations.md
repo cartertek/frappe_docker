@@ -24,6 +24,10 @@ CUSTOM_TAG=v17.x.y scripts/build-cartertek-image.sh
 
 Use `CUSTOM_TAGS` only when an explicit tag set is required.
 
+## GitHub Actions image publish
+
+The PR includes `.github/workflows/cartertek-build-image.yml`. On pull requests it builds and smoke-tests the layered image without publishing. On pushes to `main`, or manual dispatch with publishing enabled, it publishes to GHCR as `ghcr.io/cartertek/frappe`. Tag aliases mirror upstream Frappe Docker: `develop` also publishes `latest`; an exact tag like `v17.x.y` also publishes `v17` and `version-17`.
+
 ## Render compose
 
 ```bash

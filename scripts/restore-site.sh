@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-site="${SITE_NAME:-hrms.localhost}"
-project="${COMPOSE_PROJECT_NAME:-frappe_docker}"
+site="${SITE_NAME:-frappe.localhost}"
+project="${COMPOSE_PROJECT_NAME:-frappe}"
 container="${BACKEND_CONTAINER:-${project}-backend-1}"
 backup_dir="${BACKUP_DIR:-}"
 

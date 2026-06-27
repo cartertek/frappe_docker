@@ -9,7 +9,7 @@
 services:
   frontend:
     environment:
-      FRAPPE_SITE_NAME_HEADER: ${FRAPPE_SITE_NAME_HEADER:-hrms.localhost}
+      FRAPPE_SITE_NAME_HEADER: ${FRAPPE_SITE_NAME_HEADER:-frappe.localhost}
       PROXY_READ_TIMEOUT: ${PROXY_READ_TIMEOUT:-120}
       CLIENT_MAX_BODY_SIZE: ${CLIENT_MAX_BODY_SIZE:-50m}
     volumes:
@@ -37,7 +37,7 @@ services:
 
   scheduler:
     environment:
-      SITE_NAME: ${FRAPPE_SITE_NAME_HEADER:-hrms.localhost}
+      SITE_NAME: ${FRAPPE_SITE_NAME_HEADER:-frappe.localhost}
     volumes:
       - logs:/home/frappe/frappe-bench/logs
 
