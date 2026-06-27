@@ -1,3 +1,11 @@
+# frappe_docker Fork
+
+This is a fork of frappe_docker to maintain a custom deployment repo (to deploy a custom app manifest) while following the deployment docs at: https://frappe.github.io/frappe_docker/02-setup/01-overview.html.
+
+What follows is the upstream frappe_docker README.
+
+---
+
 <div align="center">
   <img src="docs/public/frappe-docker.png" alt="Frappe Docker" width="80" />
   <h1>Frappe Docker</h1>
