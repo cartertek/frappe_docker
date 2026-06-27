@@ -8,7 +8,7 @@ cp .env.production.example .env.production
 CUSTOM_TAG=v17-frappe-production-$(date +%Y%m%d) scripts/build-cartertek-image.sh
 ```
 
-The build uses `images/layered/Containerfile` and passes `apps.json` as a BuildKit secret.
+The build intentionally uses `images/layered/Containerfile` as the final production image path. This is the upstream Frappe Docker custom-app workflow for production builds that reuse Frappe-managed base/build layers while installing Cartertek apps from `apps.json`.
 
 ## Render compose
 

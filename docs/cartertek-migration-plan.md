@@ -33,6 +33,13 @@ redis-cache
 redis-queue
 ```
 
+
+## Image build path
+
+Cartertek uses `images/layered/Containerfile` for the production image build.
+
+This is intentional and final, not a temporary migration experiment. The upstream `images/production/Containerfile` only builds Frappe plus ERPNext and does not consume `apps.json`, so it is not the correct path for this stack. The `layered` image path consumes `apps.json` and is the production-oriented custom-app workflow based on Frappe-managed prebuilt layers.
+
 ## Branch contents
 
 This branch adds Cartertek-specific deployment material only:
