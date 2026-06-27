@@ -4,8 +4,8 @@ set -euo pipefail
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$repo_root"
 
-image_name="${CUSTOM_IMAGE:-cartertek/erpnext}"
-tag="${CUSTOM_TAG:-v17-hrms-outreach-$(date +%Y%m%d)}"
+image_name="${CUSTOM_IMAGE:-cartertek/frappe}"
+tag="${CUSTOM_TAG:-v17-frappe-production-$(date +%Y%m%d)}"
 frappe_path="${FRAPPE_PATH:-https://github.com/frappe/frappe}"
 frappe_branch="${FRAPPE_BRANCH:-version-17}"
 containerfile="${CONTAINERFILE:-images/layered/Containerfile}"

@@ -5,7 +5,7 @@
 ```bash
 cp .env.production.example .env.production
 # edit .env.production
-CUSTOM_TAG=v17-hrms-outreach-$(date +%Y%m%d) scripts/build-cartertek-image.sh
+CUSTOM_TAG=v17-frappe-production-$(date +%Y%m%d) scripts/build-cartertek-image.sh
 ```
 
 The build uses `images/layered/Containerfile` and passes `apps.json` as a BuildKit secret.

@@ -7,7 +7,7 @@ This repository branch prepares the move from the current HRMS bootstrap-style D
 The target image is:
 
 ```text
-cartertek/erpnext:<pinned tag>
+cartertek/frappe:<pinned tag>
 ```
 
 The image should contain:
