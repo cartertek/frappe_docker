@@ -40,6 +40,12 @@ Cartertek uses `images/layered/Containerfile` for the production image build.
 
 This is intentional and final, not a temporary migration experiment. The upstream `images/production/Containerfile` only builds Frappe plus ERPNext and does not consume `apps.json`, so it is not the correct path for this stack. The `layered` image path consumes `apps.json` and is the production-oriented custom-app workflow based on Frappe-managed prebuilt layers.
 
+## Version and image tag convention
+
+Cartertek image tags should mirror upstream Frappe Docker tag aliases. A develop build is tagged `develop` and `latest`. A stable release build from an exact tag such as `v17.x.y` is tagged `v17.x.y`, `v17`, and `version-17`. The broad tags are moving aliases; the exact release tag is the reproducible deployment tag.
+
+Do not invent project-specific image tag formats such as date-based migration labels for normal production deployments.
+
 ## Branch contents
 
 This branch adds Cartertek-specific deployment material only:

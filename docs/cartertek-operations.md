@@ -5,10 +5,24 @@
 ```bash
 cp .env.production.example .env.production
 # edit .env.production
-CUSTOM_TAG=v17-frappe-production-$(date +%Y%m%d) scripts/build-cartertek-image.sh
+CUSTOM_TAG=v17.x.y scripts/build-cartertek-image.sh
 ```
 
-The build intentionally uses `images/layered/Containerfile` as the final production image path. This is the upstream Frappe Docker custom-app workflow for production builds that reuse Frappe-managed base/build layers while installing Cartertek apps from `apps.json`.
+The build intentionally uses `images/layered/Containerfile` as the final production image path. This is the upstream Frappe Docker custom-app workflow for production builds that reuse Frappe-managed base/build layers while installing Cartertek apps from `apps.json`. Image tags mirror upstream Frappe Docker aliases: `develop` also tags `latest`; an exact release such as `v17.x.y` also tags `v17` and `version-17`.
+
+## Image tag convention
+
+Use `CUSTOM_TAG` for the primary image tag. Leave `CUSTOM_TAGS` empty to derive upstream-style aliases automatically.
+
+```bash
+CUSTOM_TAG=develop scripts/build-cartertek-image.sh
+# tags: develop latest
+
+CUSTOM_TAG=v17.x.y scripts/build-cartertek-image.sh
+# tags: v17.x.y v17 version-17
+```
+
+Use `CUSTOM_TAGS` only when an explicit tag set is required.
 
 ## Render compose
 
