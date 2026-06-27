@@ -1,0 +1,14 @@
+[
+  {
+    "url": "https://github.com/frappe/erpnext",
+    "branch": "version-17"
+  },
+  {
+    "url": "https://github.com/frappe/hrms",
+    "branch": "version-17"
+  },
+  {
+    "url": "https://github.com/cartertek/frappe-sales-engagement-intelligence",
+    "branch": "master"
+  }
+]
