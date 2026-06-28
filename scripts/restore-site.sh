@@ -79,4 +79,11 @@ fi
 echo "Restoring site ${site} in ${container}"
 docker exec "$container" bash -lc "cd /home/frappe/frappe-bench && $restore_cmd"
 
+echo "Repairing MariaDB user for restored site ${site}"
+docker exec \
+  -e SITE_NAME="$site" \
+  -e DB_ROOT_PASSWORD="$db_root_password" \
+  "$container" \
+  bash -lc 'cd /home/frappe/frappe-bench && env/bin/python scripts/repair-db-user.py'
+
 echo "Restore completed. Run scripts/migrate-site.sh next."
