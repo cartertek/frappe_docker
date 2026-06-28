@@ -64,7 +64,7 @@ restore_root="/home/frappe/frappe-bench/sites/${site}/private/backups/manual-res
 docker exec "$container" bash -lc "mkdir -p '$restore_root'"
 docker cp "$db_file" "${container}:${restore_root}/$(basename "$db_file")"
 
-restore_cmd="bench --site '$site' restore '${restore_root}/$(basename "$db_file")' --force"
+restore_cmd="bench --site '$site' restore '${restore_root}/$(basename "$db_file")' --force --db-root-password $db_root_password"
 
 if [[ -n "$public_file" ]]; then
   docker cp "$public_file" "${container}:${restore_root}/$(basename "$public_file")"
@@ -80,10 +80,11 @@ echo "Restoring site ${site} in ${container}"
 docker exec "$container" bash -lc "cd /home/frappe/frappe-bench && $restore_cmd"
 
 echo "Repairing MariaDB user for restored site ${site}"
+docker cp scripts/repair-db-user.py "$container:/tmp/repair-db-user.py"
 docker exec \
   -e SITE_NAME="$site" \
   -e DB_ROOT_PASSWORD="$db_root_password" \
   "$container" \
-  bash -lc 'cd /home/frappe/frappe-bench && env/bin/python scripts/repair-db-user.py'
+  bash -lc 'cd /home/frappe/frappe-bench && env/bin/python /tmp/repair-db-user.py'
 
 echo "Restore completed. Run scripts/migrate-site.sh next."
