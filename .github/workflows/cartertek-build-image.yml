@@ -4,17 +4,9 @@ on:
   pull_request:
     branches:
       - main
-    paths:
-      - apps.json
-      - images/layered/**
-      - .github/workflows/cartertek-build-image.yml
   push:
     branches:
       - main
-    paths:
-      - apps.json
-      - images/layered/**
-      - .github/workflows/cartertek-build-image.yml
   workflow_dispatch:
     inputs:
       image_tag:
@@ -45,7 +37,27 @@ env:
   PRIMARY_TAG: "${{ github.event.inputs.image_tag || 'develop' }}"
 
 jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      image: ${{ steps.changes.outputs.image }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Check image build inputs
+        id: changes
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            image:
+              - apps.json
+              - images/layered/**
+              - .github/workflows/cartertek-build-image.yml
+
   build:
+    needs: changes
+    if: ${{ github.event_name == 'workflow_dispatch' || needs.changes.outputs.image == 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 60
 
