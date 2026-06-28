@@ -46,9 +46,9 @@ if ! docker exec "$container" bash -lc "test -f \"$site_config_path\""; then
   echo "Creating target site $site in $container"
   docker exec \
     -e DB_PASSWORD="$db_password" \
-    -e ADMIN_PASSWORD="$admin_password" \
+    -e admin_password="$admin_password" \
     "$container" \
-    bash -lc "cd /home/frappe/frappe-bench && bench new-site '$site' --mariadb-user-host-login-scope=% --db-root-password \\\"\\$DB_PASSWORD\\\" --admin-password \\\"\\$ADMIN_PASSWORD\\\""
+    bash -lc "cd /home/frappe/frappe-bench && bench new-site '$site' --mariadb-user-host-login-scope=% --db-root-password \\\"\\$db_password\\\" --admin-password \\\"\\$admin_password\\\""
 fi
 restore_root="/home/frappe/frappe-bench/sites/${site}/private/backups/manual-restore"
 docker exec "$container" bash -lc "mkdir -p '$restore_root'"
