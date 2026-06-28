@@ -5,6 +5,14 @@ site="${SITE_NAME:-frappe.localhost}"
 project="${COMPOSE_PROJECT_NAME:-frappe}"
 container="${BACKEND_CONTAINER:-${project}-backend-1}"
 backup_dir="${BACKUP_DIR:-}"
+admin_password="${ADMIN_PASSWORD:-admin}"
+db_password="${DB_PASSWORD:-}"
+db_root_password="${DB_ROOT_PASSWORD:-}"
+new_site_force_arg=""
+if [[ "${1:-}" == "--force" ]]; then
+  new_site_force_arg="--force"
+  shift
+fi
 
 if [[ -z "$backup_dir" || ! -d "$backup_dir" ]]; then
   echo "Set BACKUP_DIR to a directory containing the bench backup artifacts." >&2
@@ -16,6 +24,24 @@ if ! command -v docker >/dev/null 2>&1; then
   exit 1
 fi
 
+if ! docker ps --format "{{.Names}}" | grep -Fxq "$container"; then
+  echo "Backend container not running or not found: $container" >&2
+  echo "Set COMPOSE_PROJECT_NAME or BACKEND_CONTAINER if needed." >&2
+  exit 1
+fi
+
+if [[ -z "$db_password" && -f .env.production ]]; then
+  db_password="$(awk -F= '$1 == "DB_PASSWORD" {print substr($0, index($0, "=") + 1)}' .env.production | tail -n 1)"
+fi
+
+if [[ -z "$db_root_password" ]]; then
+  db_root_password="$db_password"
+fi
+
+if [[ -z "$db_root_password" ]]; then
+  echo "Set DB_ROOT_PASSWORD, DB_PASSWORD, or run from a directory containing .env.production." >&2
+  exit 1
+fi
 db_file="$(find "$backup_dir" -maxdepth 1 -type f \( -name "*database.sql.gz" -o -name "*.sql.gz" \) | sort | tail -n 1)"
 public_file="$(find "$backup_dir" -maxdepth 1 -type f \( -name "*public-files.tar" -o -name "*public*.tar" \) | sort | tail -n 1 || true)"
 private_file="$(find "$backup_dir" -maxdepth 1 -type f \( -name "*private-files.tar" -o -name "*private*.tar" \) | sort | tail -n 1 || true)"
@@ -25,6 +51,15 @@ if [[ -z "$db_file" ]]; then
   exit 1
 fi
 
+site_config_path="/home/frappe/frappe-bench/sites/$site/site_config.json"
+if ! docker exec "$container" bash -lc "test -f \"$site_config_path\""; then
+  echo "Creating target site $site in $container"
+  docker exec \
+    -e db_root_password="$db_root_password" \
+    -e admin_password="$admin_password" \
+    "$container" \
+    bash -lc "cd /home/frappe/frappe-bench && bench new-site $new_site_force_arg '$site' --mariadb-user-host-login-scope=% --db-root-password \\\"\\$db_root_password\\\" --admin-password \\\"\\$admin_password\\\""
+fi
 restore_root="/home/frappe/frappe-bench/sites/${site}/private/backups/manual-restore"
 docker exec "$container" bash -lc "mkdir -p '$restore_root'"
 docker cp "$db_file" "${container}:${restore_root}/$(basename "$db_file")"
