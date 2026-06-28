@@ -64,7 +64,7 @@ restore_root="/home/frappe/frappe-bench/sites/${site}/private/backups/manual-res
 docker exec "$container" bash -lc "mkdir -p '$restore_root'"
 docker cp "$db_file" "${container}:${restore_root}/$(basename "$db_file")"
 
-restore_cmd="bench --site '$site' restore '${restore_root}/$(basename "$db_file")' --force"
+restore_cmd="bench --site '$site' restore '${restore_root}/$(basename "$db_file")' --force --db-root-password $db_root_password"
 
 if [[ -n "$public_file" ]]; then
   docker cp "$public_file" "${container}:${restore_root}/$(basename "$public_file")"
