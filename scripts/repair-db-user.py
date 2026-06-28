@@ -20,7 +20,10 @@ conn = MySQLdb.connect(host=db_host, port=db_port, user="root", passwd=root_pass
 try:
     cur = conn.cursor()
     for host in ("%", "localhost"):
-        cur.execute(f"CREATE USER IF NOT EXISTS `{db_name}`@%s IDENTIFIED BY %s", (host, db_password))
+        cur.execute(
+            f"CREATE USER IF NOT EXISTS `{db_name}`@%s IDENTIFIED BY %s",
+            (host, db_password),
+        )
         cur.execute(f"ALTER USER `{db_name}`@%s IDENTIFIED BY %s", (host, db_password))
         cur.execute(f"GRANT ALL PRIVILEGES ON `{db_name}`.* TO `{db_name}`@%s", (host,))
     cur.execute("FLUSH PRIVILEGES")
