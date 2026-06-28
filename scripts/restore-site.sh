@@ -7,6 +7,11 @@ container="${BACKEND_CONTAINER:-${project}-backend-1}"
 backup_dir="${BACKUP_DIR:-}"
 admin_password="${ADMIN_PASSWORD:-admin}"
 db_password="${DB_PASSWORD:-}"
+new_site_force_arg=""
+if [[ "${1:-}" == "--force" ]]; then
+  new_site_force_arg="--force"
+  shift
+fi
 
 if [[ -z "$backup_dir" || ! -d "$backup_dir" ]]; then
   echo "Set BACKUP_DIR to a directory containing the bench backup artifacts." >&2
@@ -45,10 +50,10 @@ site_config_path="/home/frappe/frappe-bench/sites/$site/site_config.json"
 if ! docker exec "$container" bash -lc "test -f \"$site_config_path\""; then
   echo "Creating target site $site in $container"
   docker exec \
-    -e DB_PASSWORD="$db_password" \
+    -e db_password="$db_password" \
     -e admin_password="$admin_password" \
     "$container" \
-    bash -lc "cd /home/frappe/frappe-bench && bench new-site '$site' --mariadb-user-host-login-scope=% --db-root-password \\\"\\$db_password\\\" --admin-password \\\"\\$admin_password\\\""
+    bash -lc "cd /home/frappe/frappe-bench && bench new-site $new_site_force_arg '$site' --mariadb-user-host-login-scope=% --db-root-password \\\"\\$db_password\\\" --admin-password \\\"\\$admin_password\\\""
 fi
 restore_root="/home/frappe/frappe-bench/sites/${site}/private/backups/manual-restore"
 docker exec "$container" bash -lc "mkdir -p '$restore_root'"
