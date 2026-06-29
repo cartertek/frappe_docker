@@ -24,6 +24,7 @@ docker compose --env-file "$env_file" \
   -f overrides/compose.redis.yaml \
   -f overrides/compose.noproxy.yaml \
   -f overrides/cartertek.yaml \
+  -f overrides/compose.backup-on-start.yaml \
   config >"$output"
 
 echo "Rendered $output"
