@@ -18,7 +18,7 @@ until docker inspect -f '{{.State.Running}}' "$BACKEND_CONTAINER" 2>/dev/null | 
 done
 
 echo "Waiting for valid Frappe bench directory..."
-until docker exec "$BACKEND_CONTAINER" bash -lc 'cd /home/frappe/frappe-bench 2>/dev/null && [ -f Procfile ] && [ -d sites ]'; do
+until docker exec "$BACKEND_CONTAINER" bash -lc 'cd /home/frappe/frappe-bench 2>/dev/null && [ -d apps ] && [ -d sites ] && [ -f sites/common_site_config.json ]'; do
   sleep 2
 done
 
