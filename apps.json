@@ -8,6 +8,10 @@
     "branch": "develop"
   },
   {
+    "url": "https://github.com/frappe/crm",
+    "branch": "develop"
+  },
+  {
     "url": "https://github.com/cartertek/frappe-sales-engagement-intelligence",
     "branch": "master"
   }
