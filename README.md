@@ -2,6 +2,24 @@
 
 This is a fork of frappe_docker to maintain a custom deployment repo (to deploy a custom app manifest) while following the deployment docs at: https://frappe.github.io/frappe_docker/02-setup/01-overview.html.
 
+## Cartertek deployment
+
+Render the Cartertek production Compose file from `.env.production`:
+
+```bash
+ENV_FILE=.env.production \
+OUTPUT=compose.cartertek.rendered.yaml \
+scripts/render-compose.sh
+```
+
+Start or update the rendered stack:
+
+```bash
+docker compose -p frappe -f compose.cartertek.rendered.yaml up -d
+```
+
+## Original README
+
 What follows is the upstream frappe_docker README.
 
 ---
