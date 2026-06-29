@@ -7,7 +7,7 @@ services:
     volumes:
       - ${FRAPPE_BACKUP_HOST_DIR:-./backups/frappe}:/backup
 
-  backup-on-start:
+  backup:
     image: docker:cli
     restart: unless-stopped
     depends_on:
@@ -20,5 +20,5 @@ services:
       HOLD_OPEN: ${BACKUP_HOLD_OPEN:-1}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./scripts/backup-on-start.sh:/usr/local/bin/backup-on-start:ro
+      - ./scripts/backup-on-start.sh:/usr/local/bin/backup:ro
     command: backup-on-start
