@@ -1,7 +1,7 @@
 # Environment Variables
-.env
+.env*
 
-# mounted volume
+# Mounted Volumes
 sites
 
 development/*
@@ -32,3 +32,10 @@ node_modules
 # VitePress
 **/.vitepress/dist
 **/.vitepress/cache
+
+# Compose files
+compose*
+
+# Operations
+audits
+backups
