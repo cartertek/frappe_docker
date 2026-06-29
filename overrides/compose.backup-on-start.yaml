@@ -1,0 +1,24 @@
+# Run a one-shot backup whenever this compose project is started.
+# Include this override with the normal Cartertek compose files.
+# Backups are written to FRAPPE_BACKUP_HOST_DIR on the host.
+
+services:
+  backend:
+    volumes:
+      - ${FRAPPE_BACKUP_HOST_DIR:-./backups/frappe}:/backup
+
+  backup-on-start:
+    image: docker:cli
+    restart: unless-stopped
+    depends_on:
+      - backend
+    environment:
+      BACKEND_CONTAINER: ${BACKEND_CONTAINER:-${COMPOSE_PROJECT_NAME:-frappe}-backend-1}
+      SITE_NAME: ${SITE_NAME:-${FRAPPE_SITE_NAME_HEADER:-frappe.localhost}}
+      BACKUP_PATH: /backup
+      BACKUP_RETENTION_DAYS: ${BACKUP_RETENTION_DAYS:-7}
+      HOLD_OPEN: ${BACKUP_HOLD_OPEN:-1}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./scripts/backup-on-start.sh:/usr/local/bin/backup-on-start:ro
+    command: backup-on-start
