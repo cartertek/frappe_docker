@@ -36,7 +36,7 @@ for container in "$backend" "$frontend"; do
 done
 
 tmp_py="$(mktemp)"
-cat > "$tmp_py" <<'PY'
+cat >"$tmp_py" <<'PY'
 import json
 import os
 
