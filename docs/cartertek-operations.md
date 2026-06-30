@@ -109,20 +109,3 @@ git push origin main
 ```
 
 Use pull requests for Cartertek deployment changes because the fork protects `main`.
-
-## Frappe CRM desktop customization
-
-After Frappe CRM is installed on the site, apply the Cartertek desktop launcher customization if the `/desk` launcher should expose Frappe CRM and its common child routes.
-
-```bash
-SITE_NAME=frappe.localhost scripts/apply-frappe-crm-desktop-icons.sh
-```
-
-The CRM-colored SVG icon assets are baked into the Cartertek Frappe image at `/assets/frappe_crm_desktop_icons/`. The script is idempotent and handles the site/database portion. It:
-
-- creates or updates the `Frappe CRM` Desktop Icon;
-- creates child Desktop Icons for Dashboard, Leads, Deals, Contacts, Organizations, Notes, and Tasks;
-- creates matching Workspace Sidebar records that route to `/crm/...` in the same browser tab;
-- updates existing Desktop Layout records so the Frappe CRM tile has the expected child icons.
-
-This is a deployment-level UI customization for Frappe CRM. It is intentionally not part of the `sales_engagement_intelligence` app.
