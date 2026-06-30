@@ -8,7 +8,7 @@ cp .env.production.example .env.production
 CUSTOM_TAG=v17.x.y scripts/build-cartertek-image.sh
 ```
 
-The build intentionally uses `images/layered/Containerfile` as the final production image path. This is the upstream Frappe Docker custom-app workflow for production builds that reuse Frappe-managed base/build layers while installing Cartertek apps from `apps.json`. Image tags mirror upstream Frappe Docker aliases: `develop` also tags `latest`; an exact release such as `v17.x.y` also tags `v17` and `version-17`.
+The build intentionally uses `images/layered/Containerfile` as the final production image path. This is the upstream Frappe Docker custom-app workflow for production builds that reuse Frappe-managed base/build layers while installing ERPNext, HRMS, Frappe CRM, and Cartertek apps from `apps.json`. Image tags mirror upstream Frappe Docker aliases: `develop` also tags `latest`; an exact release such as `v17.x.y` also tags `v17` and `version-17`.
 
 ## Image tag convention
 

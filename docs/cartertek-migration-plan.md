@@ -16,6 +16,7 @@ The image should contain:
 frappe
 erpnext
 hrms
+crm
 sales_engagement_intelligence
 ```
 
