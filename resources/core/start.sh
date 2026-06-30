@@ -8,6 +8,8 @@ GUNICORN_TIMEOUT=${GUNICORN_TIMEOUT:-120}
 
 echo "Booting Gunicorn with $GUNICORN_WORKERS workers and $GUNICORN_THREADS threads..."
 
+/usr/local/bin/finalize-deployment.sh
+
 exec /home/frappe/frappe-bench/env/bin/gunicorn \
   --chdir=/home/frappe/frappe-bench/sites \
   --bind=0.0.0.0:8000 \

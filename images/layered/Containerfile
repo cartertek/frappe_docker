@@ -57,6 +57,9 @@ RUN chmod 755 /usr/local/bin/entrypoint.sh
 COPY resources/core/start.sh /usr/local/bin/start.sh
 RUN chmod 755 /usr/local/bin/start.sh
 
+COPY resources/core/finalize-deployment.sh /usr/local/bin/finalize-deployment.sh
+RUN chmod 755 /usr/local/bin/finalize-deployment.sh
+
 USER frappe
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
