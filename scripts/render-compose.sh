@@ -29,9 +29,9 @@ compose_args=(
   config
 )
 
-if [[ -n "$output" ]]; then
+if [[ -z "$output" || "$output" == "-" ]]; then
+  docker compose "${compose_args[@]}"
+else
   docker compose "${compose_args[@]}" >"$output"
   echo "Rendered $output"
-else
-  docker compose "${compose_args[@]}"
 fi
