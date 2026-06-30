@@ -118,9 +118,8 @@ After Frappe CRM is installed on the site, apply the Cartertek desktop launcher 
 SITE_NAME=frappe.localhost scripts/apply-frappe-crm-desktop-icons.sh
 ```
 
-The script is idempotent. It:
+The CRM-colored SVG icon assets are baked into the Cartertek Frappe image at `/assets/frappe_crm_desktop_icons/`. The script is idempotent and handles the site/database portion. It:
 
-- copies CRM-colored SVG icons into the frontend/backend served assets directory;
 - creates or updates the `Frappe CRM` Desktop Icon;
 - creates child Desktop Icons for Dashboard, Leads, Deals, Contacts, Organizations, Notes, and Tasks;
 - creates matching Workspace Sidebar records that route to `/crm/...` in the same browser tab;

@@ -26,6 +26,9 @@ for container in "$backend" "$frontend"; do
   fi
 done
 
+# The Cartertek image bakes these assets into /home/frappe/frappe-bench/assets.
+# Keep this copy step as a compatibility fallback for stacks that have not yet
+# deployed an image built with resources/cartertek/frappe-crm-desktop-icons.
 for container in "$backend" "$frontend"; do
   docker exec -u frappe "$container" bash -lc "mkdir -p '/home/frappe/frappe-bench/assets/$asset_dir'"
   docker cp "$source_dir/." "$container:/home/frappe/frappe-bench/assets/$asset_dir/"
