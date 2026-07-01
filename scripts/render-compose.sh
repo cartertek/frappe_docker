@@ -5,7 +5,7 @@ repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$repo_root"
 
 env_file="${ENV_FILE:-.env.production}"
-output="${OUTPUT:-compose.cartertek.rendered.yaml}"
+output="${OUTPUT:-}"
 
 if [[ ! -f "$env_file" ]]; then
   echo "Missing env file: $env_file" >&2
@@ -18,13 +18,20 @@ if ! command -v docker >/dev/null 2>&1; then
   exit 1
 fi
 
-docker compose --env-file "$env_file" \
-  -f compose.yaml \
-  -f overrides/compose.mariadb.yaml \
-  -f overrides/compose.redis.yaml \
-  -f overrides/compose.noproxy.yaml \
-  -f overrides/cartertek.yaml \
-  -f overrides/compose.backup-on-start.yaml \
-  config >"$output"
+compose_args=(
+  --env-file "$env_file"
+  -f compose.yaml
+  -f overrides/compose.mariadb.yaml
+  -f overrides/compose.redis.yaml
+  -f overrides/compose.noproxy.yaml
+  -f overrides/cartertek.yaml
+  -f overrides/compose.backup-on-start.yaml
+  config
+)
 
-echo "Rendered $output"
+if [[ -z "$output" || "$output" == "-" ]]; then
+  docker compose "${compose_args[@]}"
+else
+  docker compose "${compose_args[@]}" >"$output"
+  echo "Rendered $output"
+fi
