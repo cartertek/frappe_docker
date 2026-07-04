@@ -14,9 +14,9 @@ on:
         required: false
         default: develop
       frappe_ref:
-        description: Frappe branch, tag, or commit used for Frappe source. Defaults to the known-good Cartertek image commit.
+        description: Frappe branch or tag used by bench init. The Dockerfile then checks out the known-good Frappe commit.
         required: false
-        default: 80d6f8767113e2d16f8a451367e387d9c8469c43
+        default: develop
       push:
         description: Publish image to GHCR.
         required: false
@@ -33,7 +33,7 @@ concurrency:
 
 env:
   IMAGE_NAME: ghcr.io/cartertek/frappe
-  FRAPPE_REF: "${{ github.event.inputs.frappe_ref || '80d6f8767113e2d16f8a451367e387d9c8469c43' }}"
+  FRAPPE_REF: "${{ github.event.inputs.frappe_ref || 'develop' }}"
   PRIMARY_TAG: "${{ github.event.inputs.image_tag || 'develop' }}"
 
 jobs:
