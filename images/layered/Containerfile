@@ -1,5 +1,4 @@
 ARG FRAPPE_BRANCH=develop
-ARG FRAPPE_PINNED_COMMIT=80d6f8767113e2d16f8a451367e387d9c8469c43
 ARG FRAPPE_IMAGE_PREFIX=frappe
 ARG FRAPPE_BUILD_IMAGE=frappe/build:develop@sha256:838827aebecbceb1382ec414bc8351cef838c10e9d672caa4eb329d141278ac6
 ARG FRAPPE_BASE_IMAGE=frappe/base:develop@sha256:08bb76672ee086d30c49ffd12db12a28faa132de72257cb662f65be612b79128
@@ -9,7 +8,6 @@ FROM ${FRAPPE_BUILD_IMAGE} AS builder
 COPY --chown=frappe:frappe resources/core/pin-apps.py /tmp/pin-apps.py
 
 ARG FRAPPE_BRANCH=develop
-ARG FRAPPE_PINNED_COMMIT=80d6f8767113e2d16f8a451367e387d9c8469c43
 ARG FRAPPE_PATH=https://github.com/frappe/frappe
 ARG CACHE_BUST=""
 
@@ -30,8 +28,6 @@ RUN --mount=type=secret,id=apps_json,target=/opt/frappe/apps.json,uid=1000,gid=1
     --verbose \
     /home/frappe/frappe-bench && \
   cd /home/frappe/frappe-bench && \
-  git -C apps/frappe fetch --depth 1 upstream ${FRAPPE_PINNED_COMMIT} && \
-  git -C apps/frappe checkout --force --detach ${FRAPPE_PINNED_COMMIT} && \
   python3 /tmp/pin-apps.py /opt/frappe/apps.json /home/frappe/frappe-bench && \
   echo "{}" > sites/common_site_config.json && \
   find apps -mindepth 1 -path "*/.git" | xargs rm -fr
