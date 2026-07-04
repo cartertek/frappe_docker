@@ -14,9 +14,9 @@ on:
         required: false
         default: develop
       frappe_ref:
-        description: Frappe ref used for layered base/build images and Frappe source.
+        description: Frappe branch, tag, or commit used for Frappe source. Defaults to the known-good Cartertek image commit.
         required: false
-        default: develop
+        default: 80d6f8767113e2d16f8a451367e387d9c8469c43
       push:
         description: Publish image to GHCR.
         required: false
@@ -33,7 +33,7 @@ concurrency:
 
 env:
   IMAGE_NAME: ghcr.io/cartertek/frappe
-  FRAPPE_REF: "${{ github.event.inputs.frappe_ref || 'develop' }}"
+  FRAPPE_REF: "${{ github.event.inputs.frappe_ref || '80d6f8767113e2d16f8a451367e387d9c8469c43' }}"
   PRIMARY_TAG: "${{ github.event.inputs.image_tag || 'develop' }}"
 
 jobs:
