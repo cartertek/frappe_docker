@@ -14,7 +14,7 @@ on:
         required: false
         default: develop
       frappe_ref:
-        description: Frappe ref used for layered base/build images and Frappe source.
+        description: Frappe branch or tag used by bench init. The Dockerfile then checks out the known-good Frappe commit.
         required: false
         default: develop
       push:
