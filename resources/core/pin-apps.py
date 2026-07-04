@@ -28,5 +28,9 @@ for app in apps:
     if not os.path.isdir(app_path):
         raise SystemExit(f"Pinned app path does not exist: {app_path}")
 
-    subprocess.check_call(["git", "-C", app_path, "fetch", "--depth", "1", "upstream", pin])
-    subprocess.check_call(["git", "-C", app_path, "checkout", "--force", "--detach", pin])
+    subprocess.check_call(
+        ["git", "-C", app_path, "fetch", "--depth", "1", "upstream", pin]
+    )
+    subprocess.check_call(
+        ["git", "-C", app_path, "checkout", "--force", "--detach", pin]
+    )
