@@ -1,0 +1,2 @@
+# Apps whose frontend assets must be rebuilt after build patches are applied.
+crm
