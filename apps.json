@@ -16,7 +16,6 @@
   },
   {
     "url": "https://github.com/cartertek/frappe-sales-engagement-intelligence",
-    "branch": "master",
-    "pin": "50266da006ace198de650f54b6c1be20d99825ac"
+    "branch": "master"
   }
 ]
