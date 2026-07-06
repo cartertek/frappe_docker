@@ -1,17 +1,33 @@
---- a/apps/crm/frontend/src/components/Apps.vue	2026-07-06 21:26:37.047832918 +0000
-+++ b/apps/crm/frontend/src/components/Apps.vue	2026-07-06 21:26:37.062423221 +0000
-@@ -3,7 +3,7 @@
-     placement="right-start"
-     trigger="hover"
-     :hoverDelay="0.1"
+diff --git a/apps/crm/frontend/src/components/Apps.vue b/apps/crm/frontend/src/components/Apps.vue
+index 6959a75..682e747 100644
+--- a/apps/crm/frontend/src/components/Apps.vue
++++ b/apps/crm/frontend/src/components/Apps.vue
+@@ -1,17 +1,11 @@
+ <template>
+-  <Popover
+-    placement="right-start"
+-    trigger="hover"
+-    :hoverDelay="0.1"
 -    :leaveDelay="0.1"
-+    :leaveDelay="0.35"
-   >
-     <template #target="{ togglePopover }">
+-  >
+-    <template #target="{ togglePopover }">
++  <Popover bare side="right" align="start">
++    <template #trigger>
        <button
-@@ -27,7 +27,7 @@
+         :class="[
+           active ? 'bg-surface-gray-3' : 'text-ink-gray-6',
+           'group w-full flex h-7 items-center justify-between rounded px-2 text-base hover:bg-surface-gray-2',
+         ]"
+-        @click.prevent="togglePopover()"
+       >
+         <div class="flex gap-2">
+           <AppsIcon class="size-4" />
+@@ -25,9 +19,9 @@
+         />
+       </button>
      </template>
-     <template #body>
+-    <template #body>
++    <template #default>
        <div
 -        class="flex w-fit mx-2 min-w-32 max-w-48 flex-col rounded-lg border border-outline-gray-2 bg-surface-base p-1.5 text-sm text-ink-gray-8 shadow-xl auto-fill-[100px]"
 +        class="flex w-fit min-w-32 max-w-48 flex-col rounded-lg border border-outline-gray-2 bg-surface-base p-1.5 text-sm text-ink-gray-8 shadow-xl auto-fill-[100px]"
