@@ -14,7 +14,7 @@ on:
         required: false
         default: develop
       frappe_ref:
-        description: Frappe branch or tag used by bench init. The Dockerfile then checks out the known-good Frappe commit.
+        description: Legacy Frappe branch input; Frappe source is pinned by FRAPPE_COMMIT in the layered image build.
         required: false
         default: develop
       push:
@@ -104,6 +104,8 @@ jobs:
             FRAPPE_IMAGE_PREFIX=frappe
             FRAPPE_PATH=https://github.com/frappe/frappe
             FRAPPE_BRANCH=${{ env.FRAPPE_REF }}
+            FRAPPE_COMMIT=80d6f8767113e2d16f8a451367e387d9c8469c43
+            FRAPPE_PIN_REF=cartertek-known-good-20260701
           load: true
           platforms: linux/amd64
           secret-files: |
@@ -132,6 +134,8 @@ jobs:
             FRAPPE_IMAGE_PREFIX=frappe
             FRAPPE_PATH=https://github.com/frappe/frappe
             FRAPPE_BRANCH=${{ env.FRAPPE_REF }}
+            FRAPPE_COMMIT=80d6f8767113e2d16f8a451367e387d9c8469c43
+            FRAPPE_PIN_REF=cartertek-known-good-20260701
           platforms: linux/amd64
           push: true
           secret-files: |
