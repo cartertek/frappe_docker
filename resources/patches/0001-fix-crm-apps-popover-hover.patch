@@ -1,20 +1,76 @@
---- a/apps/crm/frontend/src/components/Apps.vue	2026-07-06 21:26:37.047832918 +0000
-+++ b/apps/crm/frontend/src/components/Apps.vue	2026-07-06 21:26:37.062423221 +0000
-@@ -3,7 +3,7 @@
-     placement="right-start"
-     trigger="hover"
-     :hoverDelay="0.1"
--    :leaveDelay="0.1"
-+    :leaveDelay="0.35"
-   >
-     <template #target="{ togglePopover }">
-       <button
-@@ -27,7 +27,7 @@
-     </template>
-     <template #body>
-       <div
--        class="flex w-fit mx-2 min-w-32 max-w-48 flex-col rounded-lg border border-outline-gray-2 bg-surface-base p-1.5 text-sm text-ink-gray-8 shadow-xl auto-fill-[100px]"
-+        class="flex w-fit min-w-32 max-w-48 flex-col rounded-lg border border-outline-gray-2 bg-surface-base p-1.5 text-sm text-ink-gray-8 shadow-xl auto-fill-[100px]"
-       >
-         <a
-           v-for="app in apps.data"
+diff --git a/apps/crm/frontend/src/components/UserDropdown.vue b/apps/crm/frontend/src/components/UserDropdown.vue
+index 3eb5ce5..59701de 100644
+--- a/apps/crm/frontend/src/components/UserDropdown.vue
++++ b/apps/crm/frontend/src/components/UserDropdown.vue
+@@ -48,14 +48,13 @@
+ <script setup>
+ import BrandLogo from '@/components/BrandLogo.vue'
+ import FrappeCloudIcon from '@/components/Icons/FrappeCloudIcon.vue'
+-import Apps from '@/components/Apps.vue'
+ import { sessionStore } from '@/stores/session'
+ import { usersStore } from '@/stores/users'
+ import { getSettings } from '@/stores/settings'
+ import { showSettings, isMobileView } from '@/composables/settings'
+ import { showAboutModal } from '@/composables/modals'
+ import { confirmLoginToFrappeCloud } from '@/composables/frappecloud'
+-import { Dropdown } from 'frappe-ui'
++import { Dropdown, createResource } from 'frappe-ui'
+ import { computed, h, markRaw } from 'vue'
+
+ defineProps({
+@@ -68,6 +67,44 @@ const { getUser } = usersStore()
+
+ const user = computed(() => getUser() || {})
+
++const apps = createResource({
++  url: 'frappe.apps.get_apps',
++  cache: 'apps',
++  auto: true,
++  transform: (data) => {
++    let _apps = [
++      {
++        name: 'frappe',
++        logo: '/assets/frappe/images/framework.png',
++        title: __('Desk'),
++        route: '/app',
++      },
++    ]
++    data.map((app) => {
++      if (app.name === 'crm') return
++      _apps.push({
++        name: app.name,
++        logo: app.logo,
++        title: __(app.title),
++        route: app.route,
++      })
++    })
++
++    return _apps
++  },
++})
++
++const appSubmenuItems = computed(() => {
++  return (apps.data || []).map((app) => ({
++    label: app.title,
++    icon: h('img', { src: app.logo, class: 'size-4' }),
++    onClick: () => {
++      window.location.href = app.route
++    },
++  }))
++})
++
++
+ const dropdownItems = computed(() => {
+   if (!settings.value?.dropdown_items) return []
+
+@@ -123,7 +160,9 @@ function getStandardItem(item) {
+   switch (item.name1) {
+     case 'app_selector':
+       return {
+-        component: markRaw(Apps),
++        icon: item.icon,
++        label: __(item.label || 'Apps'),
++        submenu: appSubmenuItems.value,
+       }
+     case 'settings':
+       return {

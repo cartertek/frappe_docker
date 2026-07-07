@@ -54,6 +54,7 @@ jobs:
               - apps.json
               - images/layered/**
               - resources/core/**
+              - resources/patches/**
               - resources/cartertek/**
               - .github/workflows/cartertek-build-image.yml
 
