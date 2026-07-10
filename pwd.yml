@@ -27,6 +27,10 @@ services:
       - -c
     command:
       - >
+        mkdir -p sites;
+        if [ ! -s sites/common_site_config.json ] || ! python -m json.tool sites/common_site_config.json >/dev/null 2>&1; then
+          echo "{}" > sites/common_site_config.json;
+        fi;
         ls -1 apps > sites/apps.txt;
         bench set-config -g db_host $$DB_HOST;
         bench set-config -gp db_port $$DB_PORT;
