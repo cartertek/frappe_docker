@@ -109,3 +109,58 @@ git push origin main
 ```
 
 Use pull requests for Cartertek deployment changes because the fork protects `main`.
+
+## Optional Tailnet MCP Gateway access
+
+The Cartertek layered image clones the Tailnet MCP Gateway `master` branch during
+the image build and copies only its `machine-tools` directory into the final
+image. These tools were previously installed into a running container with
+`tailnet-mcp-gateway/machine-tools/inject.sh`.
+
+The image build now handles the install portion:
+
+- OpenSSH server is installed.
+- Tailscale is installed.
+- `/usr/local/lib/machine-tools` contains the gateway machine-tools scripts.
+- `/usr/local/bin/machine-tools-start.sh` starts `sshd` and `tailscaled`.
+- The normal image entrypoint calls `/usr/local/bin/machine-tools-container-start.sh`
+  before starting the app command.
+
+Runtime configuration is supplied through
+`overrides/compose.tailnet-mcp-gateway.yaml`. To include that override in the
+Cartertek render script, provide a non-empty `TAILNET_MCP_SERVICES` list.
+
+Examples:
+
+```bash
+TAILNET_MCP_SERVICES=backend
+TAILNET_MCP_SERVICES=backend,queue-short,scheduler
+```
+
+Leave `TAILNET_MCP_SERVICES` blank to disable the override.
+
+The render script turns that service list into per-service enable flags for the
+known Frappe services: `backend`, `frontend`, `websocket`, `queue-short`,
+`queue-long`, and `scheduler`. The compose override attaches the shared machine
+tools environment to those services, but the entrypoint hook only runs where the
+rendered per-service flag is true. It does not set `container_name:`. Instead,
+it passes the Compose-generated default container name pattern, such as
+`${COMPOSE_PROJECT_NAME:-frappe}-backend-1`, into the container as
+`TAILNET_MCP_CONTAINER_NAME`.
+
+Set the runtime credentials and SSH key source:
+
+```bash
+TAILSCALE_API_KEY=tskey-api-...
+TAILNET_MCP_SSH_HOST_DIR=./ssh
+```
+
+SSH keys are provided by mounting a host directory containing `.pub` files with
+`TAILNET_MCP_SSH_HOST_DIR`. This mounted directory is the Docker-native
+replacement for the old injector copying the repository `ssh` directory into the
+container.
+
+On startup, each enabled container starts SSH and Tailscale, writes authorized
+keys from the mounted SSH directory, and uses
+`TAILSCALE_API_KEY` to log the container into the tailnet when it is not already
+authenticated.

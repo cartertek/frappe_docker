@@ -16,8 +16,16 @@ ARG FRAPPE_COMMIT=80d6f8767113e2d16f8a451367e387d9c8469c43
 ARG FRAPPE_PIN_REF=cartertek-known-good-20260701
 ARG FRAPPE_PATH=https://github.com/frappe/frappe
 ARG CACHE_BUST=""
+ARG TAILNET_MCP_GATEWAY_REPO=https://github.com/JoshuaCWebDeveloper/tailnet-mcp-gateway.git
+ARG TAILNET_MCP_GATEWAY_REF=master
 
 USER frappe
+
+RUN git clone --depth 1 --branch "${TAILNET_MCP_GATEWAY_REF}" "${TAILNET_MCP_GATEWAY_REPO}" /tmp/tailnet-mcp-gateway \
+  && test -x /tmp/tailnet-mcp-gateway/machine-tools/install.sh \
+  && test -x /tmp/tailnet-mcp-gateway/machine-tools/configure.sh \
+  && test -x /tmp/tailnet-mcp-gateway/machine-tools/start.sh \
+  && rm -rf /tmp/tailnet-mcp-gateway/.git
 
 RUN --mount=type=secret,id=apps_json,target=/opt/frappe/apps.json,uid=1000,gid=1000 \
   : "${CACHE_BUST}" && \
@@ -77,6 +85,22 @@ RUN chmod 755 /usr/local/bin/start.sh
 
 COPY resources/core/finalize-deployment.sh /usr/local/bin/finalize-deployment.sh
 RUN chmod 755 /usr/local/bin/finalize-deployment.sh
+
+# Tailnet MCP Gateway machine tools are cloned from master at image build time.
+COPY --from=builder /tmp/tailnet-mcp-gateway/machine-tools /usr/local/share/tailnet-mcp-gateway/machine-tools
+COPY resources/core/machine-tools-container-start.sh /usr/local/bin/machine-tools-container-start.sh
+COPY resources/core/machine-tools-start-hook.sh /usr/local/bin/machine-tools-start-hook.sh
+RUN apt-get update \
+  && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y sudo \
+  && rm -rf /var/lib/apt/lists/* \
+  && chmod 755 /usr/local/share/tailnet-mcp-gateway/machine-tools/*.sh \
+  && chmod 755 /usr/local/bin/machine-tools-container-start.sh \
+  && chmod 755 /usr/local/bin/machine-tools-start-hook.sh \
+  && /usr/local/share/tailnet-mcp-gateway/machine-tools/install.sh \
+    --entrypoint /usr/local/bin/machine-tools-start-hook.sh \
+  && printf 'ALL ALL=(root) NOPASSWD:SETENV: /usr/local/bin/machine-tools-container-start.sh\n' > /etc/sudoers.d/machine-tools-container-start \
+  && chmod 0440 /etc/sudoers.d/machine-tools-container-start \
+  && visudo -cf /etc/sudoers.d/machine-tools-container-start
 
 USER frappe
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
