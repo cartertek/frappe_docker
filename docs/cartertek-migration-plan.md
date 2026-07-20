@@ -52,7 +52,7 @@ This branch adds Cartertek-specific deployment material only:
 
 ```text
 apps.json
-.env.example
+example.env
 .env.production.example
 overrides/cartertek.yaml
 scripts/audit-current-stack.sh
