@@ -1,0 +1,87 @@
+# Optional Cartertek Tailnet MCP Gateway override.
+#
+# The image contains the machine-tools scripts. This override enables the
+# entrypoint hook for selected services. Select services in .env with:
+#   TAILNET_MCP_SERVICES=backend,queue-short
+#
+# Required to authenticate Tailscale:
+#   TAILSCALE_API_KEY=tskey-api-...
+#
+# Recommended for SSH access through the tailnet:
+#   TAILNET_MCP_SSH_HOST_DIR=./ssh
+#
+x-tailnet-mcp-backend: &tailnet_mcp_backend
+  environment:
+    TAILNET_MCP_GATEWAY_ENABLED: ${TAILNET_MCP_ENABLE_BACKEND:-false}
+    TAILNET_MCP_CONTAINER_NAME: ${TAILNET_MCP_BACKEND_CONTAINER_NAME:-${COMPOSE_PROJECT_NAME:-frappe}-backend-1}
+    TAILSCALE_API_KEY: ${TAILSCALE_API_KEY:-}
+  volumes:
+    - ${TAILNET_MCP_SSH_HOST_DIR:-./ssh}:/usr/local/share/tailnet-mcp-gateway/ssh:ro
+    - tailnet-mcp-backend-tailscale-state:/var/lib/tailscale
+
+x-tailnet-mcp-frontend: &tailnet_mcp_frontend
+  environment:
+    TAILNET_MCP_GATEWAY_ENABLED: ${TAILNET_MCP_ENABLE_FRONTEND:-false}
+    TAILNET_MCP_CONTAINER_NAME: ${TAILNET_MCP_FRONTEND_CONTAINER_NAME:-${COMPOSE_PROJECT_NAME:-frappe}-frontend-1}
+    TAILSCALE_API_KEY: ${TAILSCALE_API_KEY:-}
+  volumes:
+    - ${TAILNET_MCP_SSH_HOST_DIR:-./ssh}:/usr/local/share/tailnet-mcp-gateway/ssh:ro
+    - tailnet-mcp-frontend-tailscale-state:/var/lib/tailscale
+
+x-tailnet-mcp-websocket: &tailnet_mcp_websocket
+  environment:
+    TAILNET_MCP_GATEWAY_ENABLED: ${TAILNET_MCP_ENABLE_WEBSOCKET:-false}
+    TAILNET_MCP_CONTAINER_NAME: ${TAILNET_MCP_WEBSOCKET_CONTAINER_NAME:-${COMPOSE_PROJECT_NAME:-frappe}-websocket-1}
+    TAILSCALE_API_KEY: ${TAILSCALE_API_KEY:-}
+  volumes:
+    - ${TAILNET_MCP_SSH_HOST_DIR:-./ssh}:/usr/local/share/tailnet-mcp-gateway/ssh:ro
+    - tailnet-mcp-websocket-tailscale-state:/var/lib/tailscale
+
+x-tailnet-mcp-queue-short: &tailnet_mcp_queue_short
+  environment:
+    TAILNET_MCP_GATEWAY_ENABLED: ${TAILNET_MCP_ENABLE_QUEUE_SHORT:-false}
+    TAILNET_MCP_CONTAINER_NAME: ${TAILNET_MCP_QUEUE_SHORT_CONTAINER_NAME:-${COMPOSE_PROJECT_NAME:-frappe}-queue-short-1}
+    TAILSCALE_API_KEY: ${TAILSCALE_API_KEY:-}
+  volumes:
+    - ${TAILNET_MCP_SSH_HOST_DIR:-./ssh}:/usr/local/share/tailnet-mcp-gateway/ssh:ro
+    - tailnet-mcp-queue-short-tailscale-state:/var/lib/tailscale
+
+x-tailnet-mcp-queue-long: &tailnet_mcp_queue_long
+  environment:
+    TAILNET_MCP_GATEWAY_ENABLED: ${TAILNET_MCP_ENABLE_QUEUE_LONG:-false}
+    TAILNET_MCP_CONTAINER_NAME: ${TAILNET_MCP_QUEUE_LONG_CONTAINER_NAME:-${COMPOSE_PROJECT_NAME:-frappe}-queue-long-1}
+    TAILSCALE_API_KEY: ${TAILSCALE_API_KEY:-}
+  volumes:
+    - ${TAILNET_MCP_SSH_HOST_DIR:-./ssh}:/usr/local/share/tailnet-mcp-gateway/ssh:ro
+    - tailnet-mcp-queue-long-tailscale-state:/var/lib/tailscale
+
+x-tailnet-mcp-scheduler: &tailnet_mcp_scheduler
+  environment:
+    TAILNET_MCP_GATEWAY_ENABLED: ${TAILNET_MCP_ENABLE_SCHEDULER:-false}
+    TAILNET_MCP_CONTAINER_NAME: ${TAILNET_MCP_SCHEDULER_CONTAINER_NAME:-${COMPOSE_PROJECT_NAME:-frappe}-scheduler-1}
+    TAILSCALE_API_KEY: ${TAILSCALE_API_KEY:-}
+  volumes:
+    - ${TAILNET_MCP_SSH_HOST_DIR:-./ssh}:/usr/local/share/tailnet-mcp-gateway/ssh:ro
+    - tailnet-mcp-scheduler-tailscale-state:/var/lib/tailscale
+
+services:
+  backend:
+    <<: *tailnet_mcp_backend
+  frontend:
+    <<: *tailnet_mcp_frontend
+  websocket:
+    <<: *tailnet_mcp_websocket
+  queue-short:
+    <<: *tailnet_mcp_queue_short
+  queue-long:
+    <<: *tailnet_mcp_queue_long
+  scheduler:
+    <<: *tailnet_mcp_scheduler
+
+volumes:
+  tailnet-mcp-backend-tailscale-state:
+  tailnet-mcp-frontend-tailscale-state:
+  tailnet-mcp-websocket-tailscale-state:
+  tailnet-mcp-queue-short-tailscale-state:
+  tailnet-mcp-queue-long-tailscale-state:
+  tailnet-mcp-scheduler-tailscale-state:

@@ -9,4 +9,8 @@ rm -rf "$ASSETS_PATH"
 mkdir -p "$(dirname "$ASSETS_PATH")"
 ln -s "$BAKED_PATH" "$ASSETS_PATH"
 
+if [ -x /usr/local/bin/machine-tools-container-start.sh ]; then
+  sudo -E -n /usr/local/bin/machine-tools-container-start.sh
+fi
+
 exec "$@"
