@@ -7,7 +7,8 @@ ARG FRAPPE_BASE_IMAGE=frappe/base:develop@sha256:08bb76672ee086d30c49ffd12db12a2
 
 FROM ${FRAPPE_BUILD_IMAGE} AS builder
 
-COPY --chown=frappe:frappe resources/core/pin-apps.py /tmp/pin-apps.py
+COPY --chown=frappe:frappe resources/core/prepare-apps.py /tmp/prepare-apps.py
+COPY --chown=frappe:frappe resources/core/verify-app-pins.py /tmp/verify-app-pins.py
 COPY --chown=frappe:frappe resources/core/apply-build-patches.sh /tmp/apply-build-patches.sh
 COPY --chown=frappe:frappe resources/patches /tmp/build-patches
 
@@ -27,7 +28,8 @@ RUN --mount=type=secret,id=apps_json,target=/opt/frappe/apps.json,uid=1000,gid=1
   git -C /tmp/frappe-src tag --force "${FRAPPE_PIN_REF}" "${FRAPPE_COMMIT}" && \
   export APP_INSTALL_ARGS="" && \
   if [ -f /opt/frappe/apps.json ] && [ -s /opt/frappe/apps.json ]; then \
-    export APP_INSTALL_ARGS="--apps_path=/opt/frappe/apps.json"; \
+    python3 /tmp/prepare-apps.py /opt/frappe/apps.json /tmp/bench-apps.json /tmp/pinned-apps && \
+    export APP_INSTALL_ARGS="--apps_path=/tmp/bench-apps.json"; \
   fi && \
   bench init ${APP_INSTALL_ARGS}\
     --frappe-branch=${FRAPPE_PIN_REF} \
@@ -38,12 +40,12 @@ RUN --mount=type=secret,id=apps_json,target=/opt/frappe/apps.json,uid=1000,gid=1
     --verbose \
     /home/frappe/frappe-bench && \
   cd /home/frappe/frappe-bench && \
-  python3 /tmp/pin-apps.py /opt/frappe/apps.json /home/frappe/frappe-bench && \
+  python3 /tmp/verify-app-pins.py /opt/frappe/apps.json /home/frappe/frappe-bench && \
   /tmp/apply-build-patches.sh /home/frappe/frappe-bench /tmp/build-patches && \
   git -C apps/frappe rev-parse HEAD | grep -qx "${FRAPPE_COMMIT}" && \
   echo "{}" > sites/common_site_config.json && \
   find apps -mindepth 1 -path "*/.git" | xargs rm -fr && \
-  rm -rf /tmp/frappe-src
+  rm -rf /tmp/frappe-src /tmp/pinned-apps /tmp/bench-apps.json
 
 FROM ${FRAPPE_BASE_IMAGE} AS backend
 
