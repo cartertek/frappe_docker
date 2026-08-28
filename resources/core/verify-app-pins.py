@@ -41,9 +41,7 @@ def main():
             ["git", "-C", app_path, "rev-parse", "HEAD"], text=True
         ).strip()
         if actual != pin:
-            raise SystemExit(
-                f"Pinned app {name} resolved to {actual}, expected {pin}"
-            )
+            raise SystemExit(f"Pinned app {name} resolved to {actual}, expected {pin}")
         print(f"Verified {name} at {pin}")
 
 
