@@ -64,7 +64,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     outputs:
-      image: ${{ steps.built-image.outputs.image }}
+      built_image: ${{ steps.image-output.outputs.built_image }}
+      published_image: ${{ steps.image-output.outputs.published_image }}
       digest: ${{ steps.publish.outputs.digest }}
 
     steps:
@@ -147,19 +148,30 @@ jobs:
             apps_json=apps.json
           tags: ${{ steps.tags.outputs.tags }}
 
-      - name: Output built image
-        id: built-image
-        if: ${{ steps.publish.outcome == 'success' }}
+      - name: Output image names
+        id: image-output
+        if: ${{ always() }}
         shell: bash
         env:
           DIGEST: ${{ steps.publish.outputs.digest }}
         run: |
           set -euo pipefail
-          image="${IMAGE_NAME}@${DIGEST}"
-          echo "image=${image}" >> "$GITHUB_OUTPUT"
+          built_image="local/cartertek-frappe:${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          published_image=""
+          if [[ -n "${DIGEST}" ]]; then
+            published_image="${IMAGE_NAME}@${DIGEST}"
+          fi
+
+          echo "built_image=${built_image}" >> "$GITHUB_OUTPUT"
+          echo "published_image=${published_image}" >> "$GITHUB_OUTPUT"
+
           {
-            echo "### Built image"
+            echo '## Image outputs'
             echo
-            echo "`${image}`"
+            printf '**Built image:** `%s`\n\n' "$built_image"
+            if [[ -n "$published_image" ]]; then
+              printf '**Published image:** `%s`\n' "$published_image"
+            else
+              echo '**Published image:** not published in this run'
+            fi
           } >> "$GITHUB_STEP_SUMMARY"
-          echo "Built image: ${image}"
